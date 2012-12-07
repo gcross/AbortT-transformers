@@ -20,10 +20,16 @@ module Control.Monad.Trans.Abort (
     AbortT(..),
     runAbortT,
     -- * Abort operations
-    abort
+    abort,
+    -- * lifters
+    liftCallCC,
+    liftCatch,
+    liftListen,
+    liftPass
     ) where
 
 import Control.Applicative
+import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 
@@ -100,3 +106,44 @@ abort :: Monad m
                       --   arbitrary type since its value will never
                       --   be accessed
 abort = AbortT . return . Left
+
+-- | Lifts a @callCC@ operation to 'AbortT'.
+liftCallCC ::
+       (((Either r a -> m (Either r b)) -> m (Either r a)) -> m (Either r a))
+            -- ^ @callCC@ on the argument monad.
+    -> ((a -> AbortT r m b) -> AbortT r m a)
+            -- ^ 'AbortT' action that receives the continuation
+    -> AbortT r m a
+liftCallCC callCC f =
+    AbortT . callCC $
+        \c -> unwrapAbortT (f (AbortT . c . Right))
+
+-- | Lift a @catchError@ operation to 'AbortT'.
+liftCatch ::
+      (m (Either r a) -> (e -> m (Either r a)) -> m (Either r a))
+                                        -- ^ @catch@ on the argument monad.
+    -> AbortT r m a                     -- ^ 'AbortT' action to attempt.
+    -> (e -> AbortT r m a)              -- ^ Exception handler.
+    -> AbortT r m a
+liftCatch catch m handler =
+    AbortT $ catch (unwrapAbortT m) (unwrapAbortT . handler)
+
+-- | Lift a @listen@ operation to the new monad.
+liftListen :: Monad m
+    => (m (Either r a) -> m (Either r a,w)) -- ^ @listen@ on the argument monad.
+    -> AbortT r m a                         -- ^ 'AbortT' action to run.
+    -> AbortT r m (a,w)
+liftListen listen = AbortT .
+    (listen . unwrapAbortT >=> return . (\(a,w) -> either Left (\x -> Right (x,w)) a))
+
+-- | Lift a @pass@ operation to the new monad.
+liftPass :: Monad m
+    => (m (Either r a,w -> w) -> m (Either r a)) -- ^ @pass@ on the argument monad.
+    -> AbortT r m (a,w -> w)                     -- ^ 'AbortT' action to run.
+    -> AbortT r m a
+liftPass pass =
+    AbortT . pass . liftM (
+        either
+          (\l -> (Left l,id))
+          (\(r,f) -> (Right r,f))
+    ) . unwrapAbortT
