@@ -1,5 +1,5 @@
 Name:                AbortT-transformers
-Version:             1.0.1
+Version:             1.0.1.1
 License:             BSD3
 License-file:        LICENSE
 Author:              Gregory Crosswhite
@@ -27,10 +27,10 @@ Test-Suite test
     Build-depends:
         base >= 3 && < 5,
         HUnit == 1.2.*,
-        QuickCheck >= 2.4 && < 2.6,
-        test-framework == 0.6.*,
-        test-framework-hunit == 0.2.*,
-        test-framework-quickcheck2 == 0.2.*,
+        QuickCheck >= 2.4 && < 2.8,
+        test-framework >= 0.6 && < 0.9,
+        test-framework-hunit >= 0.2 && < 0.4,
+        test-framework-quickcheck2 >= 0.2 && < 0.4,
         transformers >= 0.2 && < 0.4
 
 source-repository head
@@ -40,4 +40,4 @@ source-repository head
 source-repository this
   type:                git
   location:            git://github.com/gcross/AbortT-transformers.git
-  tag:                 1.0.1
+  tag:                 1.0.1.1
