@@ -1,5 +1,5 @@
 Name:                AbortT-transformers
-Version:             1.0.1.1
+Version:             1.0.1.2
 License:             BSD3
 License-file:        LICENSE
 Author:              Gregory Crosswhite
@@ -18,7 +18,7 @@ Category:            Control
 
 Library
     Build-depends:   base >= 3 && < 5,
-                     transformers >= 0.2 && < 0.4
+                     transformers >= 0.2 && < 0.5
     Exposed-modules: Control.Monad.Trans.Abort
 
 Test-Suite test
@@ -26,12 +26,12 @@ Test-Suite test
     Main-is:    test.hs
     Build-depends:
         base >= 3 && < 5,
-        HUnit == 1.2.*,
-        QuickCheck >= 2.4 && < 2.8,
+        HUnit >= 1.2 && < 1.4,
+        QuickCheck >= 2.4 && < 2.9,
         test-framework >= 0.6 && < 0.9,
         test-framework-hunit >= 0.2 && < 0.4,
         test-framework-quickcheck2 >= 0.2 && < 0.4,
-        transformers >= 0.2 && < 0.4
+        transformers >= 0.2 && < 0.5
 
 source-repository head
   type:                git
