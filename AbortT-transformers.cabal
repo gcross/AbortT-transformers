@@ -5,7 +5,7 @@ License-file:        LICENSE
 Author:              Gregory Crosswhite
 Maintainer:          Gregory Crosswhite <gcrosswhite@gmail.com>
 Stability:           Stable
-Homepage:            http://github.com/gcross/AbortT-transformers
+Homepage:            https://github.com/gcross/AbortT-transformers
 Synopsis:            A monad and monadic transformer providing "abort" functionality
 Description:         This module provides a monad and a monad transformer that allow the user to abort a monadic computation and immediately return a result.
                      .
